@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Folha de Pagamento - Custos Totais</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Nome</th><th>Cargo</th><th>Grupo</th>
+      <th>Salário</th><th>FGTS</th><th>INSS Empregado</th><th>INSS Patronal</th><th>Custo Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in dados %}
+      <tr>
+        <td>{{ d.nome }}</td>
+        <td>{{ d.cargo }}</td>
+        <td>{{ d.grupo }}</td>
+        <td>R$ {{ '%0.2f'|format(d.salario) }}</td>
+        <td>R$ {{ '%0.2f'|format(d.fgts) }}</td>
+        <td>R$ {{ '%0.2f'|format(d.inss_empregado) }}</td>
+        <td>R$ {{ '%0.2f'|format(d.inss_patronal) }}</td>
+        <td><b>R$ {{ '%0.2f'|format(d.custo_total) }}</b></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

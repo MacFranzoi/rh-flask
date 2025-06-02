@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Cargos e Salários</h2>
+<form method="POST" action="{{ url_for('add_cargo') }}" class="row g-2 my-2">
+  <div class="col"><input name="nome" class="form-control" placeholder="Cargo" required></div>
+  <div class="col"><input name="grupo" class="form-control" placeholder="Grupo" required></div>
+  <div class="col"><input name="salario_base" class="form-control" placeholder="Salário Base" type="number" step="0.01" required></div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Adicionar</button></div>
+</form>
+<table class="table table-hover">
+  <thead>
+    <tr><th>ID</th><th>Cargo</th><th>Grupo</th><th>Salário Base</th></tr>
+  </thead>
+  <tbody>
+    {% for c in cargos %}
+      <tr>
+        <td>{{c.id}}</td>
+        <td>{{c.nome}}</td>
+        <td>{{c.grupo}}</td>
+        <td>R$ {{'%0.2f'|format(c.salario_base)}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

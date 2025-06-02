@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Feriado</h2>
+<form method="POST" class="row g-2 my-2">
+  <div class="col"><input name="data" class="form-control" type="date" value="{{ feriado.data }}"></div>
+  <div class="col"><input name="descricao" class="form-control" value="{{ feriado.descricao }}"></div>
+  <div class="col">
+    <select name="tipo" class="form-select">
+      <option value="Nacional" {% if feriado.tipo=='Nacional' %}selected{% endif %}>Nacional</option>
+      <option value="Estadual" {% if feriado.tipo=='Estadual' %}selected{% endif %}>Estadual</option>
+      <option value="Municipal" {% if feriado.tipo=='Municipal' %}selected{% endif %}>Municipal</option>
+      <option value="Ponto Facultativo" {% if feriado.tipo=='Ponto Facultativo' %}selected{% endif %}>Ponto Facultativo</option>
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+  <a href="{{ url_for('feriados') }}" class="btn btn-secondary btn-sm">Cancelar</a></div>
+</form>
+{% endblock %}

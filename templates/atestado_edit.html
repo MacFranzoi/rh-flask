@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Atestado</h2>
+<form method="POST" enctype="multipart/form-data" class="row g-2 my-2">
+  <div class="col">
+    <select name="id_colaborador" class="form-select" required>
+      {% for c in colaboradores %}
+        <option value="{{c.id}}" {% if c.id == atestado.id_colaborador %}selected{% endif %}>{{c.nome}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col">
+    <select name="tipo_atestado" id="tipo_atestado" class="form-select" onchange="toggleAtestadoTipo()" required>
+      <option value="dias" {% if atestado.tipo_atestado=='dias' %}selected{% endif %}>Dias</option>
+      <option value="horas" {% if atestado.tipo_atestado=='horas' %}selected{% endif %}>Horas</option>
+    </select>
+  </div>
+  <div class="col" id="atestado_dias" style="display:{{ 'block' if atestado.tipo_atestado == 'dias' else 'none' }}">
+    <input name="data_inicio" class="form-control" placeholder="Data início" type="date" value="{{ atestado.data_inicio }}">
+    <input name="data_fim" class="form-control" placeholder="Data fim" type="date" value="{{ atestado.data_fim }}">
+  </div>
+  <div class="col" id="atestado_horas" style="display:{{ 'block' if atestado.tipo_atestado == 'horas' else 'none' }}">
+    <input name="data_hora" class="form-control" placeholder="Data" type="date" value="{{ atestado.data_inicio }}">
+    <input name="horas" class="form-control" placeholder="Horas abonadas" type="number" step="0.01" value="{{ atestado.horas }}">
+  </div>
+  <div class="col"><input name="motivo" class="form-control" placeholder="Motivo" value="{{ atestado.motivo }}"></div>
+  <div class="col">
+    {% if atestado.arquivo %}
+      <a href="{{ url_for('download_atestado_file', filename=atestado.arquivo) }}" target="_blank">Arquivo atual</a>
+    {% endif %}
+    <input type="file" name="arquivo" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+  </div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+  <a href="{{ url_for('atestados') }}" class="btn btn-secondary btn-sm">Cancelar</a></div>
+</form>
+<script>
+function toggleAtestadoTipo() {
+  let tipo = document.getElementById('tipo_atestado').value;
+  document.getElementById('atestado_dias').style.display = (tipo === 'dias') ? 'block' : 'none';
+  document.getElementById('atestado_horas').style.display = (tipo === 'horas') ? 'block' : 'none';
+}
+</script>
+{% endblock %}

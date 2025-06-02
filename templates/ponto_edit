@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Registro de Ponto</h2>
+<form method="POST" class="row g-2 my-2">
+  <div class="col">
+    <select name="id_colaborador" class="form-select" required>
+      {% for c in colaboradores %}
+        <option value="{{c.id}}" {% if c.id == ponto.id_colaborador %}selected{% endif %}>{{c.nome}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col"><input name="data" class="form-control" type="date" value="{{ ponto.data }}"></div>
+  <div class="col"><input name="entrada" class="form-control" value="{{ ponto.entrada }}"></div>
+  <div class="col"><input name="saida" class="form-control" value="{{ ponto.saida }}"></div>
+  <div class="col">
+    <select name="tipo_saida" class="form-select">
+      <option value="">Tipo Saída</option>
+      <option {% if ponto.tipo_saida=='Almoço' %}selected{% endif %}>Almoço</option>
+      <option {% if ponto.tipo_saida=='Amamentação' %}selected{% endif %}>Amamentação</option>
+      <option {% if ponto.tipo_saida=='Consulta médica' %}selected{% endif %}>Consulta médica</option>
+      <option {% if ponto.tipo_saida=='Assunto particular' %}selected{% endif %}>Assunto particular</option>
+      <option {% if ponto.tipo_saida=='Outro' %}selected{% endif %}>Outro</option>
+    </select>
+  </div>
+  <div class="col"><input name="duracao_saida" class="form-control" type="number" step="0.01" value="{{ ponto.duracao_saida }}"></div>
+  <div class="col"><input name="amamentacao_horas" class="form-control" type="number" step="0.01" value="{{ ponto.amamentacao_horas }}"></div>
+  <div class="col"><input name="horas_extra" class="form-control" type="number" step="0.01" value="{{ ponto.horas_extra }}"></div>
+  <div class="col"><input name="horas_faltas" class="form-control" type="number" step="0.01" value="{{ ponto.horas_faltas }}"></div>
+  <div class="col"><input name="observacao" class="form-control" value="{{ ponto.observacao }}"></div>
+  <div class="col">
+    <select name="feriado" class="form-select">
+      <option value="">Feriado?</option>
+      {% for f in feriados %}
+        <option value="{{f.data}}" {% if f.data == ponto.feriado %}selected{% endif %}>{{f.data}} - {{f.descricao}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+  <a href="{{ url_for('pontos') }}" class="btn btn-secondary btn-sm">Cancelar</a></div>
+</form>
+{% endblock %}

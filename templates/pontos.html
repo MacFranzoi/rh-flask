@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Registros de Ponto</h2>
+<a href="{{ url_for('export', tipo='pontos') }}" class="btn btn-outline-primary btn-sm">Exportar Excel</a>
+<a href="{{ url_for('modelo', tipo='pontos') }}" class="btn btn-outline-secondary btn-sm">Baixar Modelo</a>
+<form method="POST" action="{{ url_for('add_ponto') }}" class="row g-2 my-2">
+  <div class="col">
+    <select name="id_colaborador" class="form-select" required>
+      <option value="">Colaborador</option>
+      {% for c in colaboradores %}
+        <option value="{{c.id}}">{{c.nome}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col"><input name="data" class="form-control" type="date" placeholder="Data"></div>
+  <div class="col"><input name="entrada" class="form-control" placeholder="Entrada (HH:MM)"></div>
+  <div class="col"><input name="saida" class="form-control" placeholder="Saída (HH:MM)"></div>
+  <div class="col">
+    <select name="tipo_saida" class="form-select">
+      <option value="">Tipo Saída</option>
+      <option>Almoço</option>
+      <option>Amamentação</option>
+      <option>Consulta médica</option>
+      <option>Assunto particular</option>
+      <option>Outro</option>
+    </select>
+  </div>
+  <div class="col"><input name="duracao_saida" class="form-control" placeholder="Duração Saída (h)" type="number" step="0.01"></div>
+  <div class="col"><input name="amamentacao_horas" class="form-control" placeholder="Amamentação (h)" type="number" step="0.01"></div>
+  <div class="col"><input name="horas_extra" class="form-control" placeholder="Extras" type="number" step="0.01"></div>
+  <div class="col"><input name="horas_faltas" class="form-control" placeholder="Faltas" type="number" step="0.01"></div>
+  <div class="col"><input name="observacao" class="form-control" placeholder="Obs"></div>
+  <div class="col">
+    <select name="feriado" class="form-select">
+      <option value="">Feriado?</option>
+      {% for f in feriados %}
+        <option value="{{f.data}}">{{f.data}} - {{f.descricao}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Registrar</button></div>
+</form>
+<table class="table table-hover table-sm">
+  <thead>
+    <tr>
+      <th>Colaborador</th><th>Data</th><th>Entrada</th><th>Saída</th>
+      <th>Tipo Saída</th><th>Duração Saída</th>
+      <th>Amamentação (h)</th><th>Extras</th><th>Faltas</th>
+      <th>Obs</th><th>Feriado</th><th>Horas Trabalhadas</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in pontos %}
+      <tr>
+        <td>
+          {% for c in colaboradores %}{% if c.id == p.id_colaborador %}{{c.nome}}{% endif %}{% endfor %}
+        </td>
+        <td>{{p.data}}</td>
+        <td>{{p.entrada}}</td>
+        <td>{{p.saida}}</td>
+        <td>{{p.tipo_saida}}</td>
+        <td>{{p.duracao_saida}}</td>
+        <td>{{p.amamentacao_horas}}</td>
+        <td>{{p.horas_extra}}</td>
+        <td>{{p.horas_faltas}}</td>
+        <td>{{p.observacao}}</td>
+        <td>{{p.feriado}}</td>
+        <td>{{p.horas_trabalhadas}}</td>
+        <td>
+          <a href="{{ url_for('edit_ponto', idx=loop.index0) }}" class="btn btn-sm btn-warning">Editar</a>
+          <a href="{{ url_for('delete_ponto', idx=loop.index0) }}" class="btn btn-sm btn-danger" onclick="return confirm('Excluir?')">Excluir</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<form method="POST" action="{{ url_for('importar', tipo='pontos') }}" enctype="multipart/form-data">
+  <label class="form-label mt-3">Importar (.xlsx): <input type="file" name="file" required></label>
+  <button type="submit" class="btn btn-warning btn-sm">Importar</button>
+</form>
+{% endblock %}

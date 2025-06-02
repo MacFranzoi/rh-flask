@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "nome": "Administrador",
+    "email": "admin@empresa.com",
+    "password_hash": "$2b$12$t1JvRsRg5Tcu8RRE79Hp7uEWkejz3xAfybGw1S8b5N59s7bCxPGES",
+    "tipo": "admin"
+  }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "id": "12",
+        "nome": "Isabely",
+        "cargo": "Vendedora",
+        "salario": "1988",
+        "admissao": "2023-11-01",
+        "departamento": "Miller",
+        "email": "",
+        "telefone": ""
+    },
+    {
+        "id": "13",
+        "nome": "Max Still",
+        "cargo": "Vendedor",
+        "salario": "2398",
+        "admissao": "2025-06-01",
+        "departamento": "Plaza",
+        "email": "",
+        "telefone": ""
+    }
+]

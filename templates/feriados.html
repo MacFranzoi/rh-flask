@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Feriados e Pontos Facultativos</h2>
+<a href="{{ url_for('export', tipo='feriados') }}" class="btn btn-outline-primary btn-sm">Exportar Excel</a>
+<a href="{{ url_for('modelo', tipo='feriados') }}" class="btn btn-outline-secondary btn-sm">Baixar Modelo</a>
+<form method="POST" action="{{ url_for('add_feriado') }}" class="row g-2 my-2">
+  <div class="col"><input name="data" class="form-control" type="date" placeholder="Data" required></div>
+  <div class="col"><input name="descricao" class="form-control" placeholder="Descrição" required></div>
+  <div class="col">
+    <select name="tipo" class="form-select">
+      <option value="Nacional">Nacional</option>
+      <option value="Estadual">Estadual</option>
+      <option value="Municipal">Municipal</option>
+      <option value="Ponto Facultativo">Ponto Facultativo</option>
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Adicionar</button></div>
+</form>
+<table class="table table-hover table-sm">
+  <thead>
+    <tr>
+      <th>Data</th><th>Descrição</th><th>Tipo</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in feriados %}
+      <tr>
+        <td>{{f.data}}</td>
+        <td>{{f.descricao}}</td>
+        <td>{{f.tipo}}</td>
+        <td>
+          <a href="{{ url_for('edit_feriado', idx=loop.index0) }}" class="btn btn-sm btn-warning">Editar</a>
+          <a href="{{ url_for('delete_feriado', idx=loop.index0) }}" class="btn btn-sm btn-danger" onclick="return confirm('Excluir?')">Excluir</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<form method="POST" action="{{ url_for('importar', tipo='feriados') }}" enctype="multipart/form-data">
+  <label class="form-label mt-3">Importar (.xlsx): <input type="file" name="file" required></label>
+  <button type="submit" class="btn btn-warning btn-sm">Importar</button>
+</form>
+{% endblock %}

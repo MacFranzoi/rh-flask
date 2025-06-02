@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Sistema RH - Dashboard</h2>
+<div class="row mb-4">
+  <div class="col">
+    <div class="card text-center"><div class="card-body">
+      <div class="fw-bold">Colaboradores</div>
+      <div class="display-6">{{ n_colabs }}</div>
+      <a href="{{ url_for('colaboradores') }}" class="btn btn-outline-primary btn-sm">Ver</a>
+    </div></div>
+  </div>
+  <div class="col">
+    <div class="card text-center"><div class="card-body">
+      <div class="fw-bold">Pontos</div>
+      <div class="display-6">{{ n_pontos }}</div>
+      <a href="{{ url_for('pontos') }}" class="btn btn-outline-primary btn-sm">Ver</a>
+    </div></div>
+  </div>
+  <div class="col">
+    <div class="card text-center"><div class="card-body">
+      <div class="fw-bold">Atestados</div>
+      <div class="display-6">{{ n_atestados }}</div>
+      <a href="{{ url_for('atestados') }}" class="btn btn-outline-primary btn-sm">Ver</a>
+    </div></div>
+  </div>
+  <div class="col">
+    <div class="card text-center"><div class="card-body">
+      <div class="fw-bold">Feriados</div>
+      <div class="display-6">{{ n_feriados }}</div>
+      <a href="{{ url_for('feriados') }}" class="btn btn-outline-primary btn-sm">Ver</a>
+    </div></div>
+  </div>
+</div>
+<hr>
+<h5>Últimos Pontos Registrados</h5>
+<table class="table table-sm">
+  <thead><tr>
+    <th>Colaborador</th><th>Data</th><th>Entrada</th><th>Saída</th>
+  </tr></thead>
+  <tbody>
+    {% for p in ultimos_pontos %}
+      <tr>
+        <td>{{ p.id_colaborador }}</td>
+        <td>{{ p.data }}</td>
+        <td>{{ p.entrada }}</td>
+        <td>{{ p.saida }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<h5>Últimos Atestados</h5>
+<table class="table table-sm">
+  <thead>
+    <tr><th>Colaborador</th><th>Tipo</th><th>Início</th><th>Fim</th></tr>
+  </thead>
+  <tbody>
+    {% for a in ultimos_atestados %}
+      <tr>
+        <td>{{ a.id_colaborador }}</td>
+        <td>{{ a.tipo_atestado }}</td>
+        <td>{{ a.data_inicio }}</td>
+        <td>{{ a.data_fim }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
