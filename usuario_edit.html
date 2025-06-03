@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Usuário</h2>
+<form method="POST" class="row g-2 my-2">
+  <div class="col-12 col-md-6">
+    <label class="form-label">Nome:</label>
+    <input name="nome" class="form-control" value="{{ usuario.nome }}" required>
+  </div>
+  <div class="col-12 col-md-6">
+    <label class="form-label">Email:</label>
+    <input name="email" class="form-control" value="{{ usuario.email }}" required>
+  </div>
+  <div class="col-12 col-md-6">
+    <label class="form-label">Nova senha (preencha só se for trocar):</label>
+    <input name="senha" class="form-control" placeholder="Nova senha" type="password">
+  </div>
+  <div class="col-12">
+    <label class="form-label">Permissões:</label><br>
+    {% set perms = usuario.permissoes or [] %}
+    {% for perm, label in [
+      ('admin','Administrador'),
+      ('rh','RH'),
+      ('colaboradores','Colaboradores'),
+      ('pontos','Pontos'),
+      ('atestados','Atestados'),
+      ('feriados','Feriados'),
+      ('cargos','Cargos'),
+      ('folha_pagamento','Folha Pagamento'),
+      ('usuarios','Usuários')
+    ] %}
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="{{ perm }}"
+        id="edit_{{ perm }}" {% if perm in perms %}checked{% endif %}>
+      <label class="form-check-label" for="edit_{{ perm }}">{{ label }}</label>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="col-12 mt-3">
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a href="{{ url_for('usuarios') }}" class="btn btn-secondary ms-2">Voltar</a>
+  </div>
+</form>
+{% endblock %}
