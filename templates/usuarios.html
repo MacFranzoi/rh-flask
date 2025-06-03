@@ -1,23 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Usuários do Sistema</h2>
-{% if current_user.tipo == "admin" %}
+{% if "admin" in current_user.permissoes %}
 <form method="POST" action="{{ url_for('add_usuario') }}" class="row g-2 my-2">
   <div class="col"><input name="nome" class="form-control" placeholder="Nome" required></div>
   <div class="col"><input name="email" class="form-control" placeholder="Email" required></div>
   <div class="col"><input name="senha" class="form-control" placeholder="Senha" required type="password"></div>
   <div class="col">
-    <select name="tipo" class="form-select">
-      <option value="rh">RH</option>
-      <option value="admin">Administrador</option>
-    </select>
+    <label class="form-label">Permissões:</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="admin" id="perm_admin">
+      <label class="form-check-label" for="perm_admin">Administrador</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="rh" id="perm_rh">
+      <label class="form-check-label" for="perm_rh">RH</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="colaboradores" id="perm_colab">
+      <label class="form-check-label" for="perm_colab">Colaboradores</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="pontos" id="perm_pontos">
+      <label class="form-check-label" for="perm_pontos">Pontos</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="atestados" id="perm_atestados">
+      <label class="form-check-label" for="perm_atestados">Atestados</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="feriados" id="perm_feriados">
+      <label class="form-check-label" for="perm_feriados">Feriados</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="cargos" id="perm_cargos">
+      <label class="form-check-label" for="perm_cargos">Cargos</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="folha_pagamento" id="perm_folha">
+      <label class="form-check-label" for="perm_folha">Folha Pagamento</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="permissoes" value="usuarios" id="perm_usuarios">
+      <label class="form-check-label" for="perm_usuarios">Usuários</label>
+    </div>
   </div>
   <div class="col-auto"><button class="btn btn-primary btn-sm" type="submit">Adicionar</button></div>
 </form>
 {% endif %}
 <table class="table table-hover">
   <thead>
-    <tr><th>ID</th><th>Nome</th><th>Email</th><th>Tipo</th>{% if current_user.tipo == "admin" %}<th>Ações</th>{% endif %}</tr>
+    <tr>
+      <th>ID</th><th>Nome</th><th>Email</th><th>Permissões</th>
+      {% if "admin" in current_user.permissoes %}<th>Ações</th>{% endif %}
+    </tr>
   </thead>
   <tbody>
     {% for u in usuarios %}
@@ -25,9 +61,14 @@
         <td>{{u.id}}</td>
         <td>{{u.nome}}</td>
         <td>{{u.email}}</td>
-        <td>{{u.tipo}}</td>
-        {% if current_user.tipo == "admin" %}
         <td>
+          {% if u.permissoes %}
+            {{ u.permissoes|join(", ") }}
+          {% endif %}
+        </td>
+        {% if "admin" in current_user.permissoes %}
+        <td>
+          <a href="{{ url_for('edit_usuario', id=u.id) }}" class="btn btn-secondary btn-sm">Editar</a>
           <a href="{{ url_for('delete_usuario', id=u.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Excluir?')">Excluir</a>
         </td>
         {% endif %}
