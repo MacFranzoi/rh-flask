@@ -28,12 +28,10 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # --- Login model ---
 class User(UserMixin):
-    def __init__(self, id, nome, email, password_hash, permissoes):
+    def __init__(self, id, email, password_hash):
         self.id = id
-        self.nome = nome
         self.email = email
         self.password_hash = password_hash
-        self.permissoes = permissoes
 
 def load_users():
     if not os.path.exists(USER_FILE):
@@ -44,26 +42,14 @@ def load_users():
 def get_user_by_email(email):
     for u in load_users():
         if u["email"] == email:
-            return User(
-                u["id"],
-                u.get("nome", ""),
-                u["email"],
-                u["password_hash"],
-                u.get("permissoes", [])
-            )
+            return User(u["id"], u["email"], u["password_hash"])
     return None
 
 @login_manager.user_loader
 def load_user(user_id):
     for u in load_users():
         if str(u["id"]) == str(user_id):
-            return User(
-                u["id"],
-                u.get("nome", ""),
-                u["email"],
-                u["password_hash"],
-                u.get("permissoes", [])
-            )
+            return User(u["id"], u["email"], u["password_hash"])
     return None
 
 # --- Cadastro inicial ---
@@ -73,15 +59,9 @@ def criar_admin():
         email = "admin@empresa.com"
         senha = "admin123"
         password_hash = bcrypt.generate_password_hash(senha).decode('utf-8')
-        users = [{
-            "id": 1,
-            "nome": "Administrador",
-            "email": email,
-            "password_hash": password_hash,
-            "permissoes": ["admin"]
-        }]
+        users = [{"id": 1, "email": email, "password_hash": password_hash}]
         with open(USER_FILE, 'w', encoding='utf-8') as f:
-            json.dump(users, f, ensure_ascii=False, indent=4)
+            json.dump(users, f)
         return f"Usuário admin criado! Email: {email}, Senha: {senha}"
     else:
         return "Já existe usuário admin. Delete users.json para resetar."
@@ -123,7 +103,7 @@ def usuarios():
 @app.route('/usuarios/add', methods=['POST'])
 @login_required
 def add_usuario():
-    if not "admin" in getattr(current_user, 'permissoes', []):
+    if not hasattr(current_user, 'tipo') or getattr(current_user, 'tipo', None) != "admin":
         flash("Só admin pode cadastrar usuário!", "danger")
         return redirect(url_for("usuarios"))
     users = load_users()
@@ -132,7 +112,7 @@ def add_usuario():
         "nome": request.form.get('nome', ''),
         "email": request.form.get('email', ''),
         "password_hash": bcrypt.generate_password_hash(request.form.get('senha', '')).decode('utf-8'),
-        "permissoes": request.form.getlist('permissoes')
+        "tipo": request.form.get('tipo', 'rh')
     }
     users.append(novo)
     with open(USER_FILE, 'w', encoding='utf-8') as f:
@@ -140,33 +120,10 @@ def add_usuario():
     flash("Usuário cadastrado!", "success")
     return redirect(url_for("usuarios"))
 
-@app.route('/usuarios/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_usuario(id):
-    if not "admin" in getattr(current_user, 'permissoes', []):
-        flash("Só admin pode editar usuários!", "danger")
-        return redirect(url_for("usuarios"))
-    users = load_users()
-    user = next((u for u in users if u['id'] == id), None)
-    if not user:
-        flash("Usuário não encontrado.", "danger")
-        return redirect(url_for("usuarios"))
-    if request.method == "POST":
-        user['nome'] = request.form.get('nome', user.get('nome',''))
-        user['email'] = request.form.get('email', user.get('email',''))
-        if request.form.get('senha'):
-            user['password_hash'] = bcrypt.generate_password_hash(request.form.get('senha')).decode('utf-8')
-        user['permissoes'] = request.form.getlist('permissoes')
-        with open(USER_FILE, 'w', encoding='utf-8') as f:
-            json.dump(users, f, ensure_ascii=False, indent=4)
-        flash("Usuário atualizado.", "success")
-        return redirect(url_for("usuarios"))
-    return render_template("usuario_edit.html", usuario=user)
-
 @app.route('/usuarios/delete/<int:id>')
 @login_required
 def delete_usuario(id):
-    if not "admin" in getattr(current_user, 'permissoes', []):
+    if not hasattr(current_user, 'tipo') or getattr(current_user, 'tipo', None) != "admin":
         flash("Só admin pode excluir usuário!", "danger")
         return redirect(url_for("usuarios"))
     users = load_users()
